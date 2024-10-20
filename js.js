@@ -441,7 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			) {
 				window.console.log(highlightedpiece, hoverlocation);
 				reward += place1(hoverlocation, highlightedpiece, chosenpiece);
-				reward += 10;
+				reward += 20;
 			} else {
 				train++;
 				reward = -100;

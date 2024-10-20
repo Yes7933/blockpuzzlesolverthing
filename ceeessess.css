@@ -64,8 +64,60 @@ body {
 #score {
 	width: 90%;
 	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(82, 82, 82);
+}
+#moves {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(82, 82, 82);
+}
+#combo {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(82, 82, 82);
+}
+#restart {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(62, 62, 62);
+}
+#import {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(62, 62, 62);
+}
+#export {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10%;
+	background-color: rgb(62, 62, 62);
+}
+#info {
+	font-size: 2.5vmin;
+	width: 90%;
+	margin-left: 5%;
 	margin-top: 20%;
 	background-color: rgb(82, 82, 82);
+}
+#highest {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 20%;
+	background-color: rgb(82, 82, 82);
+}
+#restart:hover {
+	animation: darken 0.125s linear 0s 1 normal forwards;
+}
+#import:hover {
+	animation: darken 0.125s linear 0s 1 normal forwards;
+}
+#export:hover {
+	animation: darken 0.125s linear 0s 1 normal forwards;
 }
 .tile {
 	aspect-ratio: 1 / 1;
@@ -111,5 +163,12 @@ body {
 	to {
 		outline: none;
 		z-index: inherit;
+	}
+}
+@keyframes darken {
+	from {
+	}
+	to {
+		filter: brightness(0.75);
 	}
 }

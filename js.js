@@ -211,8 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			for (i = 0; i < 39; i++) {
 				chooseset[i][0] = chooseset[39][0];
 				placeset[i][0] = placeset[39][0];
-				Network.mutate(chooseset[i][0], 0.25);
-				Network.mutate(placeset[i][0], 0.25);
+				Network.mutate(chooseset[i][0], 0.3);
+				Network.mutate(placeset[i][0], 0.3);
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}
@@ -239,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
 					document.getElementById("tile" + (9 * (y + hoverlocation[1] - 1) + (x + hoverlocation[0])).toString()).style.backgroundColor = "#fcf003";
 					boardstate[y - 1 + hoverlocation[1]][x - 1 + hoverlocation[0]] = 1;
 					score += 5;
-					bigwin += 5;
 				} else {
 					if ((Math.ceil((y + hoverlocation[1]) / 3) === 2) ^ (Math.ceil((x + hoverlocation[0]) / 3) === 2)) {
 						document.getElementById("tile" + (9 * (y + hoverlocation[1] - 1) + (x + hoverlocation[0])).toString()).style.backgroundColor =
@@ -442,6 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			) {
 				window.console.log(highlightedpiece, hoverlocation);
 				reward += place1(hoverlocation, highlightedpiece, chosenpiece);
+				reward += 10;
 			} else {
 				train++;
 				reward = -100;

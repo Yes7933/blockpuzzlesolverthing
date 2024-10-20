@@ -449,7 +449,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			train++;
 			reward = -100;
 		}
-		if (!comparearray(prevlocation, hoverlocation)) {
+		let difference = prevlocation.map(function (item, index) {
+			return Math.abs(item - hoverlocation[index]);
+		});
+		if (difference[0] >= 2 && difference[1] >= 2) {
 			reward += 20;
 		} else {
 			reward -= 10;

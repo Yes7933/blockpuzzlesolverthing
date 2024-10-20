@@ -323,7 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				combo += 1;
 			}
 		}
-		window.console.log(combo, combocheck);
 		if (combocheck === combo) {
 			combo = 0;
 		}
@@ -361,6 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		return bigwin;
 	}
+	let prevlocation = [];
 	function run(chooser, placer, reward = 0) {
 		running = true;
 		let piececompression = [];
@@ -439,7 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				hoverlocation[1] + highlightedpiece.length <= 10 &&
 				collision(highlightedpiece, hoverlocation)
 			) {
-				window.console.log(highlightedpiece, hoverlocation);
 				reward += place1(hoverlocation, highlightedpiece, chosenpiece);
 				reward += 20;
 			} else {
@@ -450,6 +449,12 @@ document.addEventListener("DOMContentLoaded", () => {
 			train++;
 			reward = -100;
 		}
+		if (!comparearray(prevlocation, hoverlocation)) {
+			reward += 20;
+		} else {
+			reward -= 10;
+		}
+		prevlocation = hoverlocation;
 		running = false;
 		if (reward === -100) {
 			restart();
@@ -635,6 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 		if (!running) {
 			try {
+				prevlocation = [];
 				chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1]);
 				document.getElementById("info").innerHTML =
 					"NN: " + (train + 1).toString().padStart(2, "0") + " / I: " + iterations.toString().padStart(3, "0");

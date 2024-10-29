@@ -229,7 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (train >= 39) {
 			chooseset.sort((a, b) => a[1] - b[1]);
 			placeset.sort((a, b) => a[1] - b[1]);
+			let average = 0;
 			for (i = 0; i < 39; i++) {
+				average += chooseset[i][1];
 				chooseset[i][0] = chooseset[39][0];
 				placeset[i][0] = placeset[39][0];
 				Network.mutate(chooseset[i][0], 0.3);
@@ -237,8 +239,11 @@ document.addEventListener("DOMContentLoaded", () => {
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}
-			window.console.log(chooseset);
+			average += chooseset[39][1];
+			average = average / 40;
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
+			window.console.log(average, average.toString());
+			document.getElementById("average").innerHTML = "I: " + average.toString()
 			chooseset[39][1] = 0;
 			placeset[39][1] = 0;
 			train = 0;

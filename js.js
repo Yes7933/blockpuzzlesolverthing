@@ -453,11 +453,13 @@ document.addEventListener("DOMContentLoaded", () => {
 				reward += 200;
 			} else {
 				train++;
-				reward = -100;
+				reward += -100;
+				restart();
 			}
 		} else {
 			train++;
-			reward = -100;
+			reward += -100;
+			restart();
 		}
 		let difference = prevlocation.map(function (item, index) {
 			return Math.abs(item - hoverlocation[index]);
@@ -469,9 +471,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		prevlocation = hoverlocation;
 		running = false;
-		if (reward <= -100) {
-			restart();
-		}
 		return reward;
 	}
 	document.getElementById("restart").addEventListener("click", () => {

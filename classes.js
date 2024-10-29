@@ -22,7 +22,7 @@ class Level {
 			level.biases[i] = Math.random() * 2 - 1;
 		}
 	}
-	static feed(inputs, level) {
+	static feed(inputs, level, last) {
 		for (let i = 0; i < level.inputs.length; i++) {
 			level.inputs[i] = inputs[i];
 		}
@@ -31,10 +31,12 @@ class Level {
 			for (let j = 0; j < level.inputs.length; j++) {
 				sum += level.inputs[j] * level.weights[j][i];
 			}
-			if (sum > level.biases[i]) {
+			if (sum > level.biases[i] && !last) {
 				level.outputs[i] = 1;
-			} else {
+			} else if (!last) {
 				level.outputs[i] = 0;
+			} else {
+				level.outputs[i] = sum;
 			}
 		}
 		return level.outputs;
@@ -48,10 +50,11 @@ class Network {
 		}
 	}
 	static feed(inputs, network) {
-		let outputs = Level.feed(inputs, network.levels[0]);
-		for (let i = 1; i < network.levels.length; i++) {
-			outputs = Level.feed(outputs, network.levels[i]);
+		let outputs = Level.feed(inputs, network.levels[0], false);
+		for (let i = 1; i < network.levels.length - 1; i++) {
+			outputs = Level.feed(outputs, network.levels[i], false);
 		}
+		outputs = Level.feed(outputs, network.levels[network.levels.length - 1], true);
 		return outputs;
 	}
 	static mutate(network, amount=1) {

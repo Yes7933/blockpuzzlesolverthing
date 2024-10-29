@@ -155,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	];
 	let score = 0;
 	let combo = 0;
+	let choicebutton = 1;
 	function comparearray(array1, array2) {
 		return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 	}
@@ -178,6 +179,26 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		}
 		return moves;
+	}
+	function indexOfMax(arr) {
+		if (arr.length === 0) {
+			return 0;
+		}
+	
+		var max = arr[0];
+		var maxIndex = 0;
+	
+		for (var i = 1; i < arr.length; i++) {
+			if (arr[i] > max) {
+				maxIndex = i;
+				max = arr[i];
+			}
+		}
+	
+		return maxIndex;
+	}
+	function consolelogbutworse(str) {
+		document.getElementById("info").innerHTML = str
 	}
 	function restart() {
 		pieceamount = 0;
@@ -223,13 +244,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			iterations++;
 		}
 	}
-	//chooser = new Network([48, 20, 3]);
-	//placer = new Network([81, 40, 18]);
 	let chooseset = [];
 	let placeset = [];
 	for (let i = 0; i < 40; i++) {
 		chooseset.push([new Network([48, 20, 3]), 0]);
-		placeset.push([new Network([81, 40, 18]), 0]);
+		placeset.push([new Network([97, 50, 18]), 0]);
 	}
 	function place1(hoverlocation, highlightedpiece, currentbutton) {
 		let bigwin = 0;
@@ -327,6 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			combo = 0;
 		}
 		document.getElementById("combo").innerHTML = combo.toString().padStart(2, "0");
+		currentbutton++
 		let piecebutton = document.getElementById("piece" + currentbutton.toString());
 		piecebutton.innerHTML = "";
 		piecebutton.style.outline = "none";
@@ -391,18 +411,15 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			}
 		}
-		let chosen = Network.feed(piececompression, chooser);
-		let chosenpiece = chosen[0] + chosen[1] + chosen[2];
-		if (chosenpiece === 0) {
-			chosenpiece = 1;
-		}
+		chosen = Network.feed(piececompression, chooser);
+		chosenpiece = indexOfMax(chosen); 
 		let boardcompressed = [];
 		for (let i = 0; i < 9; i++) {
 			for (let j = 0; j < 9; j++) {
 				boardcompressed.push(boardstate[i][j]);
 			}
 		}
-		e = currentpieces[chosenpiece - 1];
+		e = currentpieces[chosenpiece ];
 		for (let i = 0; i < e.length; i++) {
 			for (let j = 0; j < e[0].length; j++) {
 				boardcompressed.push(e[i][j]);
@@ -422,18 +439,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		}
 		let place = Network.feed(boardcompressed, placer);
-		let possibleposition = [
-			place[0] + place[1] + place[2] + place[3] + place[4] + place[5] + place[6] + place[7] + place[8],
-			place[9] + place[10] + place[11] + place[12] + place[13] + place[14] + place[15] + place[16] + place[17],
-		];
-		possibleposition.forEach((e, i) => {
-			if (e === 0) {
-				possibleposition[i] = 1;
-			}
-		});
+		let possibleposition = [indexOfMax(place.slice(0, 8)) + 1, indexOfMax(place.slice(9)) + 1];
 		let highlightedpiece = e;
 		let hoverlocation = possibleposition;
-		if (!comparearray(highlightedpiece, []) && document.getElementById("piece" + chosenpiece.toString()).innerHTML !== "") {
+		if (!comparearray(highlightedpiece, []) && document.getElementById("piece" + (chosenpiece + 1).toString()).innerHTML !== "") {
 			if (
 				hoverlocation[0] + highlightedpiece[0].length <= 10 &&
 				hoverlocation[1] + highlightedpiece.length <= 10 &&
@@ -459,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		prevlocation = hoverlocation;
 		running = false;
-		if (reward === -100) {
+		if (reward <= -100) {
 			restart();
 		}
 		return reward;
@@ -473,14 +482,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		placeset = [];
 		for (let i = 0; i < 40; i++) {
 			chooseset.push([new Network([48, 20, 3]), 0]);
-			placeset.push([new Network([81, 40, 18]), 0]);
+			placeset.push([new Network([97, 50, 18]), 0]);
 		}
 		chooseset[39] = JSON.parse(data.substring(0, data.indexOf("split")));
 		placeset[39] = JSON.parse(data.substring(data.indexOf("split") + 5));
 		train = 100;
 		iterations = 0;
 		running = false;
-		window.console.log(chooseset);
 		restart();
 	});
 	document.getElementById("export").addEventListener("click", () => {
@@ -642,16 +650,17 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 		if (!running) {
-			try {
+			//try {
 				prevlocation = [];
 				chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1]);
 				document.getElementById("info").innerHTML =
 					"NN: " + (train + 1).toString().padStart(2, "0") + " / I: " + iterations.toString().padStart(3, "0");
-			} catch (e) {
-				document.getElementById("info").innerHTML = e.message;
-			}
+			//} catch (e) {
+			//	document.getElementById("info").innerHTML = e.message;
+			//}
 			placeset[train][1] = chooseset[train][1];
 		}
+		//setTimeout(tick, 150);
 		requestAnimationFrame(tick);
 	}
 	requestAnimationFrame(tick);

@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}
+			window.console.log(chooseset);
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 			chooseset[39][1] = 0;
 			placeset[39][1] = 0;
@@ -449,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				collision(highlightedpiece, hoverlocation)
 			) {
 				reward += place1(hoverlocation, highlightedpiece, chosenpiece);
-				reward += 20;
+				reward += 200;
 			} else {
 				train++;
 				reward = -100;

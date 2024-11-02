@@ -30,8 +30,9 @@ body {
 	flex-direction: column;
 	align-items: center;
 }
-#board {
-	width: 90%;
+.board {
+	width: 60%;
+	opacity: 0.5;
 	aspect-ratio: 1 / 1;
 	margin-top: 5%;
 	background-color: rgb(54, 54, 54);
@@ -42,15 +43,18 @@ body {
 	justify-content: center;
 	gap: 1% 1%;
 	border: solid 1vmin rgb(54, 54, 54);
+	position: absolute;
 }
-#pieces {
+.pieces {
 	margin-top: 10%;
-	width: 90%;
+	width: 70%;
 	background-color: rgb(54, 54, 54);
 	aspect-ratio: 3 / 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: absolute;
+	top: 60%;
 }
 #right {
 	width: 30%;
@@ -64,56 +68,62 @@ body {
 #score {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #moves {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #combo {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #restart {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(62, 62, 62);
 }
 #import {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(62, 62, 62);
 }
 #export {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
+	background-color: rgb(62, 62, 62);
+}
+#export2 {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 1%;
 	background-color: rgb(62, 62, 62);
 }
 #info {
 	font-size: 2.5vmin;
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 7.5%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #highest {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #average {
 	width: 90%;
 	margin-left: 5%;
-	margin-top: 10%;
+	margin-top: 1%;
 	background-color: rgb(82, 82, 82);
 }
 #restart:hover {
@@ -123,6 +133,9 @@ body {
 	animation: darken 0.125s linear 0s 1 normal forwards;
 }
 #export:hover {
+	animation: darken 0.125s linear 0s 1 normal forwards;
+}
+#export2:hover {
 	animation: darken 0.125s linear 0s 1 normal forwards;
 }
 .tile {
@@ -135,6 +148,7 @@ body {
 }
 .piece {
 	width: 90%;
+	opacity: 0.5;
 	aspect-ratio: 1 / 1;
 	background-color: rgb(82, 82, 82);
 	display: grid;

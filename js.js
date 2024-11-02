@@ -294,8 +294,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					currentpieces[j - 1].push(pendingpiece);
 				}
 				let currentmoves = -1;
-				window.console.log(currentpieces[j - 1]);
 				currentpieces[j - 1].forEach((e, i) => {
+					window.console.log(e);
 					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
 						currentmoves += checkmoves(e);
 					}

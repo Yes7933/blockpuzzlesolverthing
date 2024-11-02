@@ -367,11 +367,12 @@ document.addEventListener("DOMContentLoaded", () => {
 					}
 				}
 				setTimeout(
-					(i) => {
-						boardstate[train][i] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+					(i, train2) => {
+						boardstate[train2][i] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 					},
 					1,
-					i
+					i,
+					train
 				);
 			}
 			if (counter[i] === 10) {
@@ -379,13 +380,14 @@ document.addEventListener("DOMContentLoaded", () => {
 				bigwin += 100 * (combo + 1);
 				combo += 1;
 				setTimeout(
-					(i) => {
-						boardstate[train].forEach((element) => {
+					(i, train2) => {
+						boardstate[train2].forEach((element) => {
 							element[i] = 0;
 						});
 					},
 					1,
-					i
+					i,
+					train
 				);
 				for (let j = 0; j < 9; j++) {
 					if ((Math.ceil(i / 3) === 2) ^ (Math.ceil((j + 1) / 3) === 2)) {

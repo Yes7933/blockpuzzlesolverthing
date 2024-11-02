@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		chooseset[39] = JSON.parse(data.substring(0, data.indexOf("split")));
 		placeset[39] = JSON.parse(data.substring(data.indexOf("split") + 5));
-		train = 100;
+		train = 0;
 		iterations = 0;
 		restart();
 	});

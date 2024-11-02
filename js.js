@@ -366,6 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						document.getElementById((train + 1).toString() + "tile" + (9 * i + j).toString()).style.backgroundColor = "rgb(69, 69, 69)";
 					}
 				}
+				window.console.log(train);
 				setTimeout(
 					(i, train2) => {
 						boardstate[train2][i] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -419,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					}
 				}
 				score += 100 * (combo + 1);
-				bigwin += 100 * (combo + 1);
+				bigwin += 1000 * (combo + 1);
 				combo += 1;
 			}
 		}

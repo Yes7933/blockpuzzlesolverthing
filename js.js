@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 				let currentmoves = -1;
 				currentpieces[j - 1].forEach((e, i) => {
-					window.console.log(e);
+					window.console.log(e, j);
 					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
 						currentmoves += checkmoves(e);
 					}

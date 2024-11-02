@@ -177,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 	}
 	function collision(array, positionarray) {
+		train >= 39 ? (train = 39) : (train = train);
 		for (let y = 0; y < array.length; y++) {
 			for (let x = 0; x < array[0].length; x++) {
 				if (boardstate[train][y + positionarray[1] - 1][x + positionarray[0] - 1] + array[y][x] === 2) {

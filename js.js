@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let currentbutton = 0;
 	let aisrunning = new Array(40).fill(false);
 	let iterationdata = [];
+	let hightestdata = [];
 	let boardstate = [
 		[
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -258,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			average += chooseset[39][1];
 			average = average / 40;
 			iterationdata.push(average);
+			hightestdata.push(chooseset[39][1]);
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
@@ -574,6 +576,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	document.getElementById("export2").addEventListener("click", () => {
 		navigator.clipboard.writeText(JSON.stringify(iterationdata));
+	});
+	document.getElementById("export3").addEventListener("click", () => {
+		navigator.clipboard.writeText(JSON.stringify(hightestdata));
 	});
 	for (let j = 1; j <= 40; j++) {
 		let parent = document.createElement("div");

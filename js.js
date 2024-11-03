@@ -260,11 +260,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			average = average / 40;
 			iterationdata.push(average);
 			if (iterationdata.length > 35000) {
-				iterationdata.pop(0);
+				iterationdata = iterationdata.slice(1);
 			}
 			hightestdata.push(chooseset[39][1]);
 			if (hightestdata.length > 35000) {
-				hightestdata.pop(0);
+				hightestdata = hightestdata.slice(1);
 			}
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 

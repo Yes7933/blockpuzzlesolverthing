@@ -259,7 +259,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			average += chooseset[39][1];
 			average = average / 40;
 			iterationdata.push(average);
+			if (iterationdata.length > 35000) {
+				iterationdata.pop(0);
+			}
 			hightestdata.push(chooseset[39][1]);
+			if (hightestdata.length > 35000) {
+				hightestdata.pop(0);
+			}
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();

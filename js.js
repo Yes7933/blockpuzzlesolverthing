@@ -145,6 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	let aisrunning = new Array(40).fill(false);
 	let iterationdata = [];
 	let hightestdata = [];
+	let rounddata = [];
+	let roundhighest = 0;
 	let boardstate = [
 		[
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -281,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				currentbutton = 0;
 			}
 			for (let j = 1; j <= 40; j++) {
+				let roundhighest = 0;
 				currentpieces[j - 1] = [];
 				for (let i = 1; i <= 3; i++) {
 					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
@@ -808,6 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 		if (!running) {
 			running = true;
+			roundhighest = 1;
 			//try {
 			aisrunning = new Array(40).fill(true);
 			for (train = 0; train <= 39; train++) {
@@ -822,6 +826,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				placeset[a][1] = chooseset[a][1];
 			}
 		} else {
+			roundhighest++;
 			aisrunning.forEach((e, i) => {
 				if (e === true) {
 					train = i;

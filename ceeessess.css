@@ -113,6 +113,12 @@ body {
 	margin-top: 1%;
 	background-color: rgb(62, 62, 62);
 }
+#export4 {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 1%;
+	background-color: rgb(62, 62, 62);
+}
 #info {
 	font-size: 2.5vmin;
 	width: 90%;
@@ -145,6 +151,9 @@ body {
 	animation: darken 0.125s linear 0s 1 normal forwards;
 }
 #export3:hover {
+	animation: darken 0.125s linear 0s 1 normal forwards;
+}
+#export4:hover {
 	animation: darken 0.125s linear 0s 1 normal forwards;
 }
 .tile {

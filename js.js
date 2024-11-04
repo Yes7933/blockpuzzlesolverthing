@@ -311,7 +311,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 				let currentmoves = -1;
 				currentpieces[j - 1].forEach((e, i) => {
-					window.console.log(e, j);
 					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
 						currentmoves += checkmoves(e);
 					}
@@ -383,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
 						document.getElementById((train + 1).toString() + "tile" + (9 * i + j).toString()).style.backgroundColor = "rgb(69, 69, 69)";
 					}
 				}
-				window.console.log(train);
 				setTimeout(
 					(i, train2) => {
 						boardstate[train2][i] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -582,6 +580,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		placeset[39] = JSON.parse(data.substring(data.indexOf("split") + 5));
 		train = 0;
 		iterations = 0;
+		window.console.log(chooseset[39][1]);
 		restart();
 	});
 	document.getElementById("export").addEventListener("click", () => {

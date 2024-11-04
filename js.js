@@ -268,6 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (hightestdata.length > 35000) {
 				hightestdata = hightestdata.slice(1);
 			}
+			rounddata.push(roundhighest);
+			if (rounddata.length > 35000) {
+				rounddata = rounddata.slice(1);
+			}
+			roundhighest = 0;
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
@@ -283,7 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				currentbutton = 0;
 			}
 			for (let j = 1; j <= 40; j++) {
-				let roundhighest = 0;
 				currentpieces[j - 1] = [];
 				for (let i = 1; i <= 3; i++) {
 					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
@@ -588,6 +592,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	document.getElementById("export3").addEventListener("click", () => {
 		navigator.clipboard.writeText(JSON.stringify(hightestdata));
+	});
+	document.getElementById("export4").addEventListener("click", () => {
+		navigator.clipboard.writeText(JSON.stringify(rounddata));
 	});
 	for (let j = 1; j <= 40; j++) {
 		let parent = document.createElement("div");

@@ -176,25 +176,38 @@ document.addEventListener("DOMContentLoaded", () => {
 	let score = 0;
 	let combo = 0;
 	let choicebutton = 1;
+	let seed = [];
+	let number = 0;
 	function comparearray(array1, array2) {
 		return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 	}
-	function collision(array, positionarray) {
+	function generateseed() {
+		let seed = [];
+		for (let i = 1; i <= 10000; i++) {
+			seed.push(Math.random());
+		}
+		return seed;
+	}
+	function grabfromseed() {
+		return seed[number >= 1000 ? number %= 1000 : number];
+	}
+	function collision(array, positionarray, train) {
 		train >= 39 ? (train = 39) : (train = train);
+		typeof train === "undefined" ? (train = 0) : (train = train);
 		for (let y = 0; y < array.length; y++) {
 			for (let x = 0; x < array[0].length; x++) {
-				if (boardstate[train][y + positionarray[1] - 1][x + positionarray[0] - 1] + array[y][x] === 2) {
-					return false;
-				}
+					if (boardstate[train][y + positionarray[1] - 1][x + positionarray[0] - 1] + array[y][x] === 2) {
+						return false;
+					}
 			}
 		}
 		return true;
 	}
-	function checkmoves(array) {
+	function checkmoves(array, train) {
 		let moves = 0;
 		for (let i = 1; i + array.length <= 10; i++) {
 			for (let j = 1; j + array[0].length <= 10; j++) {
-				if (collision(array, [j, i])) {
+				if (collision(array, [j, i], train)) {
 					moves++;
 				}
 			}
@@ -221,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function consolelogbutworse(str) {
 		document.getElementById("info").innerHTML = str;
 	}
-	function restart() {
+	function restart(train) {
 		score = 0;
 		combo = 0;
 		boardstate[train - 1] = [
@@ -237,6 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		];
 		let train2 = train;
 		train2 >= 39 ? (train2 = 39) : (train2 = train);
+		typeof train2 === "undefined" ? (train2 = 0) : (train2 = train2);
 		for (let i = 1; i <= 81; i++) {
 			if ((Math.ceil(Math.ceil(i / 9) / 3) === 2) ^ (Math.ceil((((i - 1) % 9) + 1) / 3) === 2)) {
 				document.getElementById((train2 + 1).toString() + "tile" + i.toString()).style.backgroundColor = "rgb(129, 129, 129)";
@@ -277,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
 			chooseset[39][1] = 0;
-			placeset[39][1] = 0;
+				placeset[39][1] = 0;
 			iterations++;
 			for (let j = 1; j <= 40; j++) {
 				pieceamount = new Array(40);
@@ -287,60 +301,61 @@ document.addEventListener("DOMContentLoaded", () => {
 				highlightedpiece = [];
 				currentbutton = 0;
 			}
-			for (let j = 1; j <= 40; j++) {
-				currentpieces[j - 1] = [];
-				for (let i = 1; i <= 3; i++) {
-					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
-					let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
-					let pendingpiece = piecepool[Math.floor(Math.random() * piecepool.length)];
-					for (let y = 0; y < pendingpiece.length; y++) {
-						for (let x = 0; x < pendingpiece[0].length; x++) {
-							let e = document.createElement("div");
-							piececontainer.appendChild(e);
-							e.setAttribute("class", "piecegrid");
-							if (pendingpiece[y][x] === 1) {
-								e.style.backgroundColor = "#fcf003";
-							} else {
-								e.style.backgroundColor = "rgb(129, 129, 129)";
+				for (let j = 1; j <= 40; j++) {
+					currentpieces[j - 1] = [];
+					number = 0;
+					for (let i = 1; i <= 3; i++) {
+						document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
+						let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
+						let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
+						number++;
+						for (let y = 0; y < pendingpiece.length; y++) {
+							for (let x = 0; x < pendingpiece[0].length; x++) {
+								let e = document.createElement("div");
+								piececontainer.appendChild(e);
+								e.setAttribute("class", "piecegrid");
+								if (pendingpiece[y][x] === 1) {
+									e.style.backgroundColor = "#fcf003";
+								} else {
+									e.style.backgroundColor = "rgb(129, 129, 129)";
+								}
 							}
 						}
+						piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
+						piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
+						currentpieces[j - 1].push(pendingpiece);
 					}
-					piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
-					piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
-					currentpieces[j - 1].push(pendingpiece);
-				}
-				let currentmoves = -1;
-				currentpieces[j - 1].forEach((e, i) => {
-					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
-						currentmoves += checkmoves(e);
+					let currentmoves = -1;
+					currentpieces[j - 1].forEach((e, i) => {
+						if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
+							currentmoves += checkmoves(e, train);
+						}
+					});
+					currentmoves++;
+					document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
+					if (currentmoves >= 50) {
+						document.getElementById("moves").style.color = "#87f707";
+					} else if (currentmoves >= 10) {
+						document.getElementById("moves").style.color = "#eff707";
+					} else if (currentmoves > 0) {
+						document.getElementById("moves").style.color = "#f78f07";
+					} else if (currentmoves == 0) {
+						document.getElementById("moves").style.color = "white";
+					} else {
+						document.getElementById("moves").style.color = "#07f707";
 					}
-				});
-				currentmoves++;
-				document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
-				if (currentmoves >= 50) {
-					document.getElementById("moves").style.color = "#87f707";
-				} else if (currentmoves >= 10) {
-					document.getElementById("moves").style.color = "#eff707";
-				} else if (currentmoves > 0) {
-					document.getElementById("moves").style.color = "#f78f07";
-				} else if (currentmoves == 0) {
-					document.getElementById("moves").style.color = "white";
-					setTimeout(restart, 1500);
-				} else {
-					document.getElementById("moves").style.color = "#07f707";
+					pieceamount[j] = 3;
 				}
-				pieceamount[j] = 3;
+				running = false;
 			}
-			running = false;
 		}
-	}
 	let chooseset = [];
 	let placeset = [];
 	for (let i = 0; i < 40; i++) {
 		chooseset.push([new Network([48, 20, 3]), 0]);
 		placeset.push([new Network([97, 50, 18]), 0]);
 	}
-	function place1(hoverlocation, highlightedpiece, currentbutton) {
+	function place1(hoverlocation, highlightedpiece, currentbutton, train) {
 		let bigwin = 0;
 		for (let y = 0; y < highlightedpiece.length; y++) {
 			for (let x = 0; x < highlightedpiece[0].length; x++) {
@@ -457,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		let currentmoves = -1;
 		currentpieces[train].forEach((e, i) => {
 			if (document.getElementById((train + 1).toString() + "piece" + (i + 1).toString()).innerHTML !== "") {
-				currentmoves += checkmoves(e);
+				currentmoves += checkmoves(e, train);
 			}
 		});
 		currentmoves++;
@@ -470,14 +485,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			document.getElementById("moves").style.color = "#f78f07";
 		} else if (currentmoves === 0 && pieceamount !== 0) {
 			document.getElementById("moves").style.color = "white";
-			setTimeout(restart, 1500);
+			setTimeout(restart, 1500, train);
 		} else {
 			document.getElementById("moves").style.color = "#07f707";
 		}
 		return bigwin;
 	}
 	let prevlocation = [];
-	function run(chooser, placer, reward = 0) {
+	function run(chooser, placer, reward = 0, train) {
 		let piececompression = [];
 		for (let h = 1; h <= 3; h++) {
 			e = currentpieces[train][h - 1];
@@ -541,17 +556,17 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (
 				hoverlocation[0] + highlightedpiece[0].length <= 10 &&
 				hoverlocation[1] + highlightedpiece.length <= 10 &&
-				collision(highlightedpiece, hoverlocation)
+				collision(highlightedpiece, hoverlocation, train)
 			) {
-				reward += place1(hoverlocation, highlightedpiece, chosenpiece);
+				reward += place1(hoverlocation, highlightedpiece, chosenpiece, train);
 				reward += 200;
 			} else {
 				reward += -100;
-				restart();
+				restart(train);
 			}
 		} else {
 			reward += -100;
-			restart();
+			restart(train);
 		}
 		let difference = prevlocation.map(function (item, index) {
 			return Math.abs(item - hoverlocation[index]);
@@ -566,7 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	document.getElementById("restart").addEventListener("click", () => {
 		iterationdata = [];
-		restart();
+		restart(train);
 	});
 	document.getElementById("import").addEventListener("click", () => {
 		let data = window.prompt("Paste JSON data (this WILL wipe current training data)", "data");
@@ -580,8 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		placeset[39] = JSON.parse(data.substring(data.indexOf("split") + 5));
 		train = 0;
 		iterations = 0;
-		window.console.log(chooseset[39][1]);
-		restart();
+		restart(train);
 	});
 	document.getElementById("export").addEventListener("click", () => {
 		navigator.clipboard.writeText(JSON.stringify(chooseset[39]) + "split" + JSON.stringify(placeset[39]));
@@ -616,7 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					if (
 						hoverlocation[0] + highlightedpiece[0].length <= 10 &&
 						hoverlocation[1] + highlightedpiece.length <= 10 &&
-						collision(highlightedpiece, hoverlocation)
+						collision(highlightedpiece, hoverlocation, train)
 					) {
 						for (let y = 0; y < highlightedpiece.length; y++) {
 							for (let x = 0; x < highlightedpiece[0].length; x++) {
@@ -641,7 +655,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					if (
 						hoverlocation[0] + highlightedpiece[0].length <= 10 &&
 						hoverlocation[1] + highlightedpiece.length <= 10 &&
-						collision(highlightedpiece, hoverlocation)
+						collision(highlightedpiece, hoverlocation, train)
 					) {
 						for (let y = 0; y < highlightedpiece.length; y++) {
 							for (let x = 0; x < highlightedpiece[0].length; x++) {
@@ -672,9 +686,9 @@ document.addEventListener("DOMContentLoaded", () => {
 					if (
 						hoverlocation[0] + highlightedpiece[0].length <= 10 &&
 						hoverlocation[1] + highlightedpiece.length <= 10 &&
-						collision(highlightedpiece, hoverlocation)
+						collision(highlightedpiece, hoverlocation, train)
 					) {
-						place1(hoverlocation, highlightedpiece, currentbutton);
+						place1(hoverlocation, highlightedpiece, currentbutton, train);
 					}
 				}
 			});
@@ -721,60 +735,67 @@ document.addEventListener("DOMContentLoaded", () => {
 	let train = 0;
 	let iterations = 1;
 	let running = false;
-	function tick() {
-		if (comparearray(pieceamount, new Array(40).fill(0))) {
-			for (let j = 1; j <= 40; j++) {
-				currentpieces[j - 1] = [];
-				for (let i = 1; i <= 3; i++) {
-					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
-					let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
-					let pendingpiece = piecepool[Math.floor(Math.random() * piecepool.length)];
-					for (let y = 0; y < pendingpiece.length; y++) {
-						for (let x = 0; x < pendingpiece[0].length; x++) {
-							let e = document.createElement("div");
-							piececontainer.appendChild(e);
-							e.setAttribute("class", "piecegrid");
-							if (pendingpiece[y][x] === 1) {
-								e.style.backgroundColor = "#fcf003";
-							} else {
-								e.style.backgroundColor = "rgb(129, 129, 129)";
-							}
+	seed = generateseed();
+	if (comparearray(pieceamount, new Array(40).fill(0))) {
+		for (let j = 1; j <= 40; j++) {
+			currentpieces[j - 1] = [];
+			number = 0;
+			for (let i = 1; i <= 3; i++) {
+				document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
+				let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
+				let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
+				number++;
+				for (let y = 0; y < pendingpiece.length; y++) {
+					for (let x = 0; x < pendingpiece[0].length; x++) {
+						let e = document.createElement("div");
+						piececontainer.appendChild(e);
+						e.setAttribute("class", "piecegrid");
+						if (pendingpiece[y][x] === 1) {
+							e.style.backgroundColor = "#fcf003";
+						} else {
+							e.style.backgroundColor = "rgb(129, 129, 129)";
 						}
 					}
-					piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
-					piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
-					currentpieces[j - 1].push(pendingpiece);
 				}
-				let currentmoves = -1;
-				currentpieces[j - 1].forEach((e, i) => {
-					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
-						currentmoves += checkmoves(e);
-					}
-				});
-				currentmoves++;
-				document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
-				if (currentmoves >= 50) {
-					document.getElementById("moves").style.color = "#87f707";
-				} else if (currentmoves >= 10) {
-					document.getElementById("moves").style.color = "#eff707";
-				} else if (currentmoves > 0) {
-					document.getElementById("moves").style.color = "#f78f07";
-				} else if (currentmoves == 0) {
-					document.getElementById("moves").style.color = "white";
-					setTimeout(restart, 1500);
-				} else {
-					document.getElementById("moves").style.color = "#07f707";
-				}
-				pieceamount[j] = 3;
+				piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
+				piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
+				currentpieces[j - 1].push(pendingpiece);
 			}
+			let currentmoves = -1;
+			currentpieces[j - 1].forEach((e, i) => {
+				if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
+					currentmoves += checkmoves(e, train);
+				}
+			});
+			currentmoves++;
+			document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
+			if (currentmoves >= 50) {
+				document.getElementById("moves").style.color = "#87f707";
+			} else if (currentmoves >= 10) {
+				document.getElementById("moves").style.color = "#eff707";
+			} else if (currentmoves > 0) {
+				document.getElementById("moves").style.color = "#f78f07";
+			} else if (currentmoves == 0) {
+				document.getElementById("moves").style.color = "white";
+				setTimeout(restart, 1500, train);
+			} else {
+				document.getElementById("moves").style.color = "#07f707";
+			}
+			pieceamount[j] = 3;
 		}
+	}
+	function tick() {
+		let num2 = number;
 		for (let j = 1; j <= 40; j++) {
 			if (pieceamount[j] === 0) {
+				window.console.log("REFRESH!!!");
+				number = num2;
 				currentpieces[j - 1] = [];
 				for (let i = 1; i <= 3; i++) {
 					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
 					let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
-					let pendingpiece = piecepool[Math.floor(Math.random() * piecepool.length)];
+					let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
+					number++;
 					for (let y = 0; y < pendingpiece.length; y++) {
 						for (let x = 0; x < pendingpiece[0].length; x++) {
 							let e = document.createElement("div");
@@ -794,7 +815,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				let currentmoves = -1;
 				currentpieces[j - 1].forEach((e, i) => {
 					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
-						currentmoves += checkmoves(e);
+						currentmoves += checkmoves(e, train);
 					}
 				});
 				currentmoves++;
@@ -807,7 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					document.getElementById("moves").style.color = "#f78f07";
 				} else if (currentmoves == 0) {
 					document.getElementById("moves").style.color = "white";
-					setTimeout(restart, 1500);
+					setTimeout(restart, 1500, train);
 				} else {
 					document.getElementById("moves").style.color = "#07f707";
 				}
@@ -818,11 +839,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (!running) {
 			running = true;
 			roundhighest = 1;
+			chooseset[39][1] = 0;
+			placeset[39][1] = 0;
 			//try {
 			aisrunning = new Array(40).fill(true);
 			for (train = 0; train <= 39; train++) {
 				prevlocation = [];
-				chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1]);
+				chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1], train);
 			}
 			document.getElementById("info").innerHTML = "I: " + iterations.toString().padStart(3, "0");
 			//} catch (e) {
@@ -831,13 +854,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			for (let a = 0; a <= 39; a++) {
 				placeset[a][1] = chooseset[a][1];
 			}
-		} else {
+		} else if (!comparearray(aisrunning, new Array(40).fill(false))) {
 			roundhighest++;
 			aisrunning.forEach((e, i) => {
 				if (e === true) {
 					train = i;
 					prevlocation = [];
-					chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1]);
+					chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1], train);
 				}
 			});
 		}

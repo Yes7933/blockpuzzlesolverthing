@@ -189,16 +189,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		return seed;
 	}
 	function grabfromseed() {
-		return seed[number >= 1000 ? number %= 1000 : number];
+		return seed[number >= 1000 ? (number %= 1000) : number];
 	}
 	function collision(array, positionarray, train) {
 		train >= 39 ? (train = 39) : (train = train);
 		typeof train === "undefined" ? (train = 0) : (train = train);
 		for (let y = 0; y < array.length; y++) {
 			for (let x = 0; x < array[0].length; x++) {
-					if (boardstate[train][y + positionarray[1] - 1][x + positionarray[0] - 1] + array[y][x] === 2) {
-						return false;
-					}
+				if (boardstate[train][y + positionarray[1] - 1][x + positionarray[0] - 1] + array[y][x] === 2) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
 			chooseset[39][1] = 0;
-				placeset[39][1] = 0;
+			placeset[39][1] = 0;
 			iterations++;
 			for (let j = 1; j <= 40; j++) {
 				pieceamount = new Array(40);
@@ -301,54 +301,54 @@ document.addEventListener("DOMContentLoaded", () => {
 				highlightedpiece = [];
 				currentbutton = 0;
 			}
-				for (let j = 1; j <= 40; j++) {
-					currentpieces[j - 1] = [];
-					number = 0;
-					for (let i = 1; i <= 3; i++) {
-						document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
-						let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
-						let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
-						number++;
-						for (let y = 0; y < pendingpiece.length; y++) {
-							for (let x = 0; x < pendingpiece[0].length; x++) {
-								let e = document.createElement("div");
-								piececontainer.appendChild(e);
-								e.setAttribute("class", "piecegrid");
-								if (pendingpiece[y][x] === 1) {
-									e.style.backgroundColor = "#fcf003";
-								} else {
-									e.style.backgroundColor = "rgb(129, 129, 129)";
-								}
+			for (let j = 1; j <= 40; j++) {
+				currentpieces[j - 1] = [];
+				number = 0;
+				for (let i = 1; i <= 3; i++) {
+					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
+					let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
+					let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
+					number++;
+					for (let y = 0; y < pendingpiece.length; y++) {
+						for (let x = 0; x < pendingpiece[0].length; x++) {
+							let e = document.createElement("div");
+							piececontainer.appendChild(e);
+							e.setAttribute("class", "piecegrid");
+							if (pendingpiece[y][x] === 1) {
+								e.style.backgroundColor = "#fcf003";
+							} else {
+								e.style.backgroundColor = "rgb(129, 129, 129)";
 							}
 						}
-						piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
-						piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
-						currentpieces[j - 1].push(pendingpiece);
 					}
-					let currentmoves = -1;
-					currentpieces[j - 1].forEach((e, i) => {
-						if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
-							currentmoves += checkmoves(e, train);
-						}
-					});
-					currentmoves++;
-					document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
-					if (currentmoves >= 50) {
-						document.getElementById("moves").style.color = "#87f707";
-					} else if (currentmoves >= 10) {
-						document.getElementById("moves").style.color = "#eff707";
-					} else if (currentmoves > 0) {
-						document.getElementById("moves").style.color = "#f78f07";
-					} else if (currentmoves == 0) {
-						document.getElementById("moves").style.color = "white";
-					} else {
-						document.getElementById("moves").style.color = "#07f707";
-					}
-					pieceamount[j] = 3;
+					piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
+					piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
+					currentpieces[j - 1].push(pendingpiece);
 				}
-				running = false;
+				let currentmoves = -1;
+				currentpieces[j - 1].forEach((e, i) => {
+					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
+						currentmoves += checkmoves(e, train);
+					}
+				});
+				currentmoves++;
+				document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
+				if (currentmoves >= 50) {
+					document.getElementById("moves").style.color = "#87f707";
+				} else if (currentmoves >= 10) {
+					document.getElementById("moves").style.color = "#eff707";
+				} else if (currentmoves > 0) {
+					document.getElementById("moves").style.color = "#f78f07";
+				} else if (currentmoves == 0) {
+					document.getElementById("moves").style.color = "white";
+				} else {
+					document.getElementById("moves").style.color = "#07f707";
+				}
+				pieceamount[j] = 3;
 			}
+			running = false;
 		}
+	}
 	let chooseset = [];
 	let placeset = [];
 	for (let i = 0; i < 40; i++) {
@@ -585,6 +585,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	document.getElementById("import").addEventListener("click", () => {
 		let data = window.prompt("Paste JSON data (this WILL wipe current training data)", "data");
+		let seed1 = window.prompt("Paste Seed Data (leave blank for random seed", "seed");
+		if (seed1 !== "") {
+			seed = JSON.parse(seed1);
+		}
 		chooseset = [];
 		placeset = [];
 		for (let i = 0; i < 40; i++) {
@@ -608,6 +612,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	document.getElementById("export4").addEventListener("click", () => {
 		navigator.clipboard.writeText(JSON.stringify(rounddata));
+	});
+	document.getElementById("export5").addEventListener("click", () => {
+		navigator.clipboard.writeText(JSON.stringify(seed));
 	});
 	for (let j = 1; j <= 40; j++) {
 		let parent = document.createElement("div");
@@ -839,8 +846,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (!running) {
 			running = true;
 			roundhighest = 1;
-			chooseset[39][1] = 0;
-			placeset[39][1] = 0;
+			chooseset[39][1] = 10;
+			placeset[39][1] = 10;
 			//try {
 			aisrunning = new Array(40).fill(true);
 			for (train = 0; train <= 39; train++) {

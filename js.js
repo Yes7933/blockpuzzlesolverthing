@@ -267,8 +267,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				average += chooseset[i][1];
 				chooseset[i][0] = chooseset[39][0];
 				placeset[i][0] = placeset[39][0];
-				Network.mutate(chooseset[i][0], 0.05);
-				Network.mutate(placeset[i][0], 0.05);
+				Network.mutate(chooseset[i][0], 0.5);
+				Network.mutate(placeset[i][0], 0.5);
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}

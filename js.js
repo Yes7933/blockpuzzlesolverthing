@@ -262,6 +262,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (comparearray(aisrunning, new Array(40).fill(false))) {
 			chooseset.sort((a, b) => a[1] - b[1]);
 			placeset.sort((a, b) => a[1] - b[1]);
+			chooseset[39][1] += 10;
+			placeset[39][1] += 10;
 			let average = 0;
 			for (i = 0; i < 39; i++) {
 				average += chooseset[i][1];

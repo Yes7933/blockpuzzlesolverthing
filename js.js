@@ -290,8 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
-			chooseset[39][1] = 0;
-			placeset[39][1] = 0;
+			chooseset[39][1] = 10;
+			placeset[39][1] = 10;
 			iterations++;
 			for (let j = 1; j <= 40; j++) {
 				pieceamount = new Array(40);

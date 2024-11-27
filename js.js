@@ -147,20 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	let hightestdata = [];
 	let rounddata = [];
 	let roundhighest = 0;
-	let boardstate = [
-		[
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		],
-	];
-	for (let i = 1; i <= 39; i++) {
+	let boardstate = [];
+	for (let i = 0; i <= 39; i++) {
 		boardstate.push([
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -235,42 +223,42 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("info").innerHTML = str;
 	}
 	function restart(train) {
-		score = 0;
-		combo = 0;
-		boardstate[train - 1] = [
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		];
-		let train2 = train;
-		train2 >= 39 ? (train2 = 39) : (train2 = train);
-		typeof train2 === "undefined" ? (train2 = 0) : (train2 = train2);
-		for (let i = 1; i <= 81; i++) {
-			if ((Math.ceil(Math.ceil(i / 9) / 3) === 2) ^ (Math.ceil((((i - 1) % 9) + 1) / 3) === 2)) {
-				document.getElementById((train2 + 1).toString() + "tile" + i.toString()).style.backgroundColor = "rgb(129, 129, 129)";
-			} else {
-				document.getElementById((train2 + 1).toString() + "tile" + i.toString()).style.backgroundColor = "rgb(69, 69, 69)";
+		if (!comparearray(aisrunning, new Array(40).fill(false))) {
+			score = 0;
+			combo = 0;
+			boardstate[train] = [
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+			];
+			let train2 = train;
+			train2 >= 39 ? (train2 = 39) : (train2 = train);
+			typeof train2 === "undefined" ? (train2 = 0) : (train2 = train2);
+			for (let i = 1; i <= 81; i++) {
+				if ((Math.ceil(Math.ceil(i / 9) / 3) === 2) ^ (Math.ceil((((i - 1) % 9) + 1) / 3) === 2)) {
+					document.getElementById((train2 + 1).toString() + "tile" + i.toString()).style.backgroundColor = "rgb(129, 129, 129)";
+				} else {
+					document.getElementById((train2 + 1).toString() + "tile" + i.toString()).style.backgroundColor = "rgb(69, 69, 69)";
+				}
 			}
+			aisrunning[train2] = false;
 		}
-		aisrunning[train2] = false;
 		if (comparearray(aisrunning, new Array(40).fill(false))) {
 			chooseset.sort((a, b) => a[1] - b[1]);
 			placeset.sort((a, b) => a[1] - b[1]);
-			chooseset[39][1] += 10;
-			placeset[39][1] += 10;
 			let average = 0;
 			for (i = 0; i < 39; i++) {
 				average += chooseset[i][1];
-				chooseset[i][0] = chooseset[39][0];
-				placeset[i][0] = placeset[39][0];
-				Network.mutate(chooseset[i][0], 0.5);
-				Network.mutate(placeset[i][0], 0.5);
+				chooseset[i][0] = chooseset[0][0];
+				placeset[i][0] = placeset[0][0];
+				Network.mutate(chooseset[i][0], 0.25);
+				Network.mutate(placeset[i][0], 0.25);
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}
@@ -292,8 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
-			chooseset[39][1] = 10;
-			placeset[39][1] = 10;
 			iterations++;
 			for (let j = 1; j <= 40; j++) {
 				pieceamount = new Array(40);
@@ -346,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				} else {
 					document.getElementById("moves").style.color = "#07f707";
 				}
-				pieceamount[j] = 3;
+				pieceamount[j - 1] = 3;
 			}
 			running = false;
 		}
@@ -470,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		piecebutton.classList.add("hover");
 		highlightedpiece = [];
 		currentbutton = 0;
-		pieceamount--;
+		pieceamount[train]--;
 		let currentmoves = -1;
 		currentpieces[train].forEach((e, i) => {
 			if (document.getElementById((train + 1).toString() + "piece" + (i + 1).toString()).innerHTML !== "") {
@@ -485,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			document.getElementById("moves").style.color = "#eff707";
 		} else if (currentmoves > 0) {
 			document.getElementById("moves").style.color = "#f78f07";
-		} else if (currentmoves === 0 && pieceamount !== 0) {
+		} else if (currentmoves === 0 && pieceamount[train] !== 0) {
 			document.getElementById("moves").style.color = "white";
 			setTimeout(restart, 1500, train);
 		} else {
@@ -525,12 +511,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		chosen = Network.feed(piececompression, chooser);
 		chosenpiece = indexOfMax(chosen);
-		let boardcompressed = [];
-		for (let i = 0; i < 9; i++) {
-			for (let j = 0; j < 9; j++) {
-				boardcompressed.push(boardstate[train][i][j]);
-			}
-		}
+		let boardcompressed = boardstate[train].flat();
 		e = currentpieces[train][chosenpiece];
 		for (let i = 0; i < e.length; i++) {
 			for (let j = 0; j < e[0].length; j++) {
@@ -790,60 +771,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			} else {
 				document.getElementById("moves").style.color = "#07f707";
 			}
-			pieceamount[j] = 3;
+			pieceamount[j - 1] = 3;
 		}
 	}
 	function tick() {
 		let num2 = number;
-		for (let j = 1; j <= 40; j++) {
-			if (pieceamount[j] === 0) {
-				window.console.log("REFRESH!!!");
-				number = num2;
-				currentpieces[j - 1] = [];
-				for (let i = 1; i <= 3; i++) {
-					document.getElementById(j.toString() + "piece" + i.toString()).innerHTML = "";
-					let piececontainer = document.getElementById(j.toString() + "piece" + i.toString());
-					let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
-					number++;
-					for (let y = 0; y < pendingpiece.length; y++) {
-						for (let x = 0; x < pendingpiece[0].length; x++) {
-							let e = document.createElement("div");
-							piececontainer.appendChild(e);
-							e.setAttribute("class", "piecegrid");
-							if (pendingpiece[y][x] === 1) {
-								e.style.backgroundColor = "#fcf003";
-							} else {
-								e.style.backgroundColor = "rgb(129, 129, 129)";
-							}
-						}
-					}
-					piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
-					piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
-					currentpieces[j - 1].push(pendingpiece);
-				}
-				let currentmoves = -1;
-				currentpieces[j - 1].forEach((e, i) => {
-					if (document.getElementById(j.toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
-						currentmoves += checkmoves(e, train);
-					}
-				});
-				currentmoves++;
-				document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
-				if (currentmoves >= 50) {
-					document.getElementById("moves").style.color = "#87f707";
-				} else if (currentmoves >= 10) {
-					document.getElementById("moves").style.color = "#eff707";
-				} else if (currentmoves > 0) {
-					document.getElementById("moves").style.color = "#f78f07";
-				} else if (currentmoves == 0) {
-					document.getElementById("moves").style.color = "white";
-					setTimeout(restart, 1500, train);
-				} else {
-					document.getElementById("moves").style.color = "#07f707";
-				}
-				pieceamount[j - 1] = 3;
-			}
-		}
 		document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 		if (!running) {
 			running = true;
@@ -865,11 +797,57 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		} else if (!comparearray(aisrunning, new Array(40).fill(false))) {
 			roundhighest++;
-			aisrunning.forEach((e, i) => {
+			aisrunning.forEach((e, j) => {
 				if (e === true) {
-					train = i;
+					train = j;
 					prevlocation = [];
 					chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1], train);
+				}
+				if (pieceamount[j + 1] === 0) {
+					number = num2;
+					currentpieces[j] = [];
+					for (let i = 1; i <= 3; i++) {
+						document.getElementById((j + 1).toString() + "piece" + i.toString()).innerHTML = "";
+						let piececontainer = document.getElementById((j + 1).toString() + "piece" + i.toString());
+						let pendingpiece = piecepool[Math.floor(grabfromseed() * piecepool.length)];
+						number++;
+						for (let y = 0; y < pendingpiece.length; y++) {
+							for (let x = 0; x < pendingpiece[0].length; x++) {
+								let e = document.createElement("div");
+								piececontainer.appendChild(e);
+								e.setAttribute("class", "piecegrid");
+								if (pendingpiece[y][x] === 1) {
+									e.style.backgroundColor = "#fcf003";
+								} else {
+									e.style.backgroundColor = "rgb(129, 129, 129)";
+								}
+							}
+						}
+						piececontainer.style.gridTemplateRows = "repeat(" + pendingpiece.length.toString() + ", 15%)";
+						piececontainer.style.gridTemplateColumns = "repeat(" + pendingpiece[0].length.toString() + ", 15%)";
+						currentpieces[j].push(pendingpiece);
+					}
+					let currentmoves = -1;
+					currentpieces[j].forEach((e, i) => {
+						if (document.getElementById((j + 1).toString() + "piece" + (i + 1).toString()).innerHTML !== "0") {
+							currentmoves += checkmoves(e, train);
+						}
+					});
+					currentmoves++;
+					document.getElementById("moves").innerHTML = currentmoves.toString().padStart(4, "0");
+					if (currentmoves >= 50) {
+						document.getElementById("moves").style.color = "#87f707";
+					} else if (currentmoves >= 10) {
+						document.getElementById("moves").style.color = "#eff707";
+					} else if (currentmoves > 0) {
+						document.getElementById("moves").style.color = "#f78f07";
+					} else if (currentmoves == 0) {
+						document.getElementById("moves").style.color = "white";
+						setTimeout(restart, 1500, train);
+					} else {
+						document.getElementById("moves").style.color = "#07f707";
+					}
+					pieceamount[j + 1] = 3;
 				}
 			});
 		}

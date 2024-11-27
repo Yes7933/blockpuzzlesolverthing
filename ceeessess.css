@@ -175,7 +175,6 @@ body {
 }
 .piece {
 	width: 90%;
-	opacity: 0.25;
 	aspect-ratio: 1 / 1;
 	background-color: rgb(82, 82, 82);
 	display: grid;

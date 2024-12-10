@@ -148,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let rounddata = [];
 	let roundhighest = 0;
 	let boardstate = [];
+	let best = [null, null, 0];
 	for (let i = 0; i <= 39; i++) {
 		boardstate.push([
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -253,22 +254,26 @@ document.addEventListener("DOMContentLoaded", () => {
 			chooseset.sort((a, b) => a[1] - b[1]);
 			placeset.sort((a, b) => a[1] - b[1]);
 			let average = 0;
-			for (i = 0; i < 39; i++) {
+			if (chooseset[39][1] > best[2]) {
+				best[2] = Number(chooseset[39][1]);
+				best[1] = placeset[39][0];
+				best[0] = chooseset[39][0];
+			}
+			for (i = 0; i < 40; i++) {
 				average += chooseset[i][1];
 				chooseset[i][0] = chooseset[0][0];
 				placeset[i][0] = placeset[0][0];
-				Network.mutate(chooseset[i][0], 0.05);
-				Network.mutate(placeset[i][0], 0.05);
+				Network.mutate(chooseset[i][0], 0.5);
+				Network.mutate(placeset[i][0], 0.5);
 				chooseset[i][1] = 0;
 				placeset[i][1] = 0;
 			}
-			average += chooseset[39][1];
 			average = average / 40;
 			iterationdata.push(average);
 			if (iterationdata.length > 35000) {
 				iterationdata = iterationdata.slice(1);
 			}
-			hightestdata.push(chooseset[39][1]);
+			hightestdata.push(best[2]);
 			if (hightestdata.length > 35000) {
 				hightestdata = hightestdata.slice(1);
 			}
@@ -277,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				rounddata = rounddata.slice(1);
 			}
 			roundhighest = 0;
-			document.getElementById("highest").innerHTML = "H: " + chooseset[39][1].toString().padStart(5, "0");
+			document.getElementById("highest").innerHTML = "H: " + best[2].toString().padStart(5, "0");
 
 			document.getElementById("average").innerHTML = "A: " + average.toString();
 			iterations++;
@@ -479,7 +484,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		return bigwin;
 	}
-	let prevlocation = [];
 	function run(chooser, placer, reward = 0, train) {
 		let piececompression = [];
 		for (let h = 1; h <= 3; h++) {
@@ -551,14 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			reward += -100;
 			restart(train);
 		}
-		let difference = prevlocation.map(function (item, index) {
-			return Math.abs(item - hoverlocation[index]);
-		});
-		if (difference[0] >= 2 && difference[1] >= 2) {
-			reward += 20;
-		} else {
-			reward -= 10;
-		}
+		//		if (train === 39) window.console.log(reward);
 		prevlocation = hoverlocation;
 		return reward;
 	}
@@ -580,12 +577,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		chooseset[39] = JSON.parse(data.substring(0, data.indexOf("split")));
 		placeset[39] = JSON.parse(data.substring(data.indexOf("split") + 5));
+		best = [chooseset[39][0], placeset[39][0], chooseset[39][1]];
 		train = 0;
 		iterations = 0;
 		restart(train);
 	});
 	document.getElementById("export").addEventListener("click", () => {
-		navigator.clipboard.writeText(JSON.stringify(chooseset[39]) + "split" + JSON.stringify(placeset[39]));
+		navigator.clipboard.writeText(JSON.stringify(best[0]) + "split" + JSON.stringify(best[1]));
 	});
 	document.getElementById("export2").addEventListener("click", () => {
 		navigator.clipboard.writeText(JSON.stringify(iterationdata));
@@ -780,10 +778,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (!running) {
 			running = true;
 			roundhighest = 1;
-			chooseset[39][1] = 10;
-			placeset[39][1] = 10;
+			chooseset[39][1] = 0;
+			placeset[39][1] = 0;
 			//try {
-			aisrunning = new Array(40).fill(true);
 			for (train = 0; train <= 39; train++) {
 				prevlocation = [];
 				chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1], train);
@@ -795,15 +792,15 @@ document.addEventListener("DOMContentLoaded", () => {
 			for (let a = 0; a <= 39; a++) {
 				placeset[a][1] = chooseset[a][1];
 			}
+			aisrunning = new Array(40).fill(true);
 		} else if (!comparearray(aisrunning, new Array(40).fill(false))) {
 			roundhighest++;
 			aisrunning.forEach((e, j) => {
 				if (e === true) {
 					train = j;
-					prevlocation = [];
 					chooseset[train][1] = run(chooseset[train][0], placeset[train][0], chooseset[train][1], train);
 				}
-				if (pieceamount[j + 1] === 0) {
+				if (pieceamount[j] === 0) {
 					number = num2;
 					currentpieces[j] = [];
 					for (let i = 1; i <= 3; i++) {
@@ -847,7 +844,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					} else {
 						document.getElementById("moves").style.color = "#07f707";
 					}
-					pieceamount[j + 1] = 3;
+					pieceamount[j] = 3;
 				}
 			});
 		}
